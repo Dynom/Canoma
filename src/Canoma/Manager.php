@@ -52,6 +52,25 @@ class Manager
     }
 
 
+    public function getNodeForString($string)
+    {
+        $stringPosition = $this->adapter->hash($string);
+
+        // Find the node, that is positioned after the position of the string.
+        foreach ($this->nodePositions as $nodePosition => $node) {
+
+            // If the position of the node, is greater than the position of the string, we can return the first hit.
+            if ($this->adapter->compare($nodePosition, $stringPosition) > 0) {
+                return $node;
+            }
+        }
+
+        // If we reached the end of our list and still didn't find a suitable node, we pick the first one
+        // since that is first one in line in our circle
+        return reset($this->nodePositions);
+    }
+
+
     /**
      * Add a cache-node. The method expects a string argument, representing a node.
      *

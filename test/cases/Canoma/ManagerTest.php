@@ -54,6 +54,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(42, count($manager->getPositionsOfNode('foo')), 'Expecting 42 positions');
     }
 
+
     /**
      * Expecting each position to raise the total amount of positions, and without node collisions
      */
@@ -74,8 +75,24 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(36, count($manager->getAllPositions()), 'Expecting 36 positions');
     }
 
+
+    public function testGetNodeForString()
+    {
+        $this->manager->addNode('A');
+        $this->manager->addNode('B');
+        $this->manager->addNode('C');
+        $this->manager->addNode('D');
+
+        $cacheIdentifier = 'user:42';
+
+        $node = $this->manager->getNodeForString($cacheIdentifier);
+        $this->assertInternalType('string', $node, 'Expecting the node to be a string');
+    }
+
+
     /**
      * Testing 100 nodes with 500 replica's
+     * 
      * @group performanceTest
      */
     public function testManyNodePositions()

@@ -24,4 +24,22 @@ class Md5 extends HashAdapterAbstract implements HashAdapterInterface
             $string
         );
     }
+
+
+    /**
+     * Overriding default compare behavior else things go boom. Depending on BCMath functionality.
+     * @see http://www.php.net/BCMath
+     *
+     * @param int $left
+     * @param int $right
+     * @return int
+     */
+    public function compare($left, $right)
+    {
+        return bccomp(
+            sprintf("%f", hexdec($left)),
+            sprintf("%f", hexdec($right)),
+            0
+        );
+    }
 }

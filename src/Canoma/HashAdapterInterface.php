@@ -17,4 +17,18 @@ interface HashAdapterInterface
      * @return string
      */
     public function hash($string);
+
+    /**
+     * Compare two arguments, expected behavior:
+     *
+     * returns -1 if $left is smaller than $right,
+     * returns 0 if both are equal or
+     * returns +1 when $left is greater than $right
+     *
+     * @param $left
+     * @param $right
+     *
+     * @return int
+     */
+    public function compare($left, $right);
 }

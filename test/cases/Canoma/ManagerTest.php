@@ -4,6 +4,9 @@
  */
 class ManagerTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var \Canoma\Manager
+     */
     private $manager;
 
     public function setUp()
@@ -78,21 +81,88 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testGetNodeForString()
     {
-        $this->manager->addNode('A');
-        $this->manager->addNode('B');
-        $this->manager->addNode('C');
-        $this->manager->addNode('D');
+        $manager = new \Canoma\Manager(
+            new \Canoma\HashAdapter\Md5(),
+            150
+        );
+        $manager->addNode('A');
+        $manager->addNode('B');
+        $manager->addNode('C');
+        $manager->addNode('D');
 
         $cacheIdentifier = 'user:42';
 
-        $node = $this->manager->getNodeForString($cacheIdentifier);
+        $node = $manager->getNodeForString($cacheIdentifier);
         $this->assertInternalType('string', $node, 'Expecting the node to be a string');
     }
 
 
     /**
+     * @dataProvider deviationParameterProvider
+     *
+     * @param int $replicates
+     * @param int $nodes
+     * @param int $keyCount
+     * @param int $expectedSD
+     */
+    public function testCorrectDeviations($replicates = 37, $nodes = 2, $keyCount = 100, $expectedSD = 4)
+    {
+        $manager = new \Canoma\Manager(
+            new \Canoma\HashAdapter\Md5(),
+            $replicates
+        );
+
+        // Adding the amount of nodes
+        for ($i = 0; $i < $nodes; $i++) {
+            $manager->addNode('Node '. $i);
+        }
+
+        // Do lookups for the amount of cache-keys
+        for ($i = 0; $i < $keyCount; $i++) {
+            $result[] = $manager->getNodeForString("user:". $i);
+        }
+
+
+        $standardDeviation = $this->calculateSDFromResult($result);
+        $this->assertEquals($expectedSD, (int) $standardDeviation, 'Expecting the standard deviation for these parameters to be '. $expectedSD);
+    }
+
+    /**
+     * @return array replicates, nodes, keyCount, expectedSD
+     */
+    public function deviationParameterProvider()
+    {
+        return array(
+            array(37, 2, 100, 3),
+            array(10, 10, 100, 4),
+            array(20, 3, 1000, 18),
+        );
+    }
+
+
+    /**
+     * Helper method, calculating the standard deviation of a list of nodes
+     *
+     * @param array $result
+     * @return float
+     */
+    private function calculateSDFromResult(array $result)
+    {
+        $resultSummary = array_count_values($result);
+        $mean = array_sum($resultSummary) / count($resultSummary);
+
+        $deviationResult = array();
+        foreach ($resultSummary as $node => $nodeCount) {
+            $deviationResult[] = pow($nodeCount - $mean, 2);
+        }
+
+        return sqrt(array_sum($deviationResult) / count($deviationResult));
+    }
+
+
+    /**
      * Testing 100 nodes with 500 replica's
-     * 
+     *
      * @group performanceTest
      */
     public function testManyNodePositions()

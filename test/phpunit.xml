@@ -17,4 +17,9 @@
           <directory suffix="Test.php">cases</directory>
         </testsuite>
     </testsuites>
+    <groups>
+        <exclude>
+            <group>performanceTest</group>
+        </exclude>
+    </groups>
 </phpunit>

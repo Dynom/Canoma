@@ -27,7 +27,6 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         // This should be the name.
         $fqn = '\Canoma\HashAdapter\\'. $adapterName;
 
-
         // Specifying the adapter name in the configuration
         $config = array(
             'hashing_adapter' => $adapterName
@@ -53,5 +52,81 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
             array('Md5'),
             array('Crc32'),
         );
+    }
+
+
+    /**
+     * @dataProvider invalidManagerConfigurationProvider
+     * @expectedException \InvalidArgumentException
+     * @param array $config
+     */
+    public function testCreateManagerInvalidConfiguration(array $config)
+    {
+        $factory = new \Canoma\Factory();
+
+        // This should thrown an exception
+        $factory->createManager(
+            $config
+        );
+
+        $this->fail('Expected exceptions on invalid manager configuration.');
+    }
+
+
+    /**
+     * @return array Invalid replica count values
+     */
+    public function invalidManagerConfigurationProvider()
+    {
+        return array(
+            array(array()),
+            array(array(\Canoma\Factory::CONF_REPLICA_COUNT => 'foo')),
+            array(array(\Canoma\Factory::CONF_REPLICA_COUNT => -1)),
+        );
+    }
+
+
+    /**
+     * @dataProvider invalidAdapterConfigurationProvider
+     * @expectedException \InvalidArgumentException
+     * @param array $config
+     */
+    public function testCreateAdapterInvalidConfiguration(array $config)
+    {
+        $factory = new \Canoma\Factory();
+
+        // This should thrown an exception
+        $factory->createAdapter(
+            $config
+        );
+
+        $this->fail('Expected exceptions on invalid adapter configuration.');
+    }
+
+
+    /**
+     * @return array Invalid replica count values
+     */
+    public function invalidAdapterConfigurationProvider()
+    {
+        return array(
+            array(array()), // Undefined key
+        );
+    }
+
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testCreateAdapterInvalidConfigurationClass()
+    {
+        $factory = new \Canoma\Factory();
+
+        // This should thrown an exception
+        $factory->createAdapter(
+            array(\Canoma\Factory::CONF_HASHING_ADAPTER => 'someUnexistingClassIsBeingPassedAlongHere')
+        );
+
+        $this->fail('Expected exceptions on invalid adapter definition, the class does not exist.');
     }
 }

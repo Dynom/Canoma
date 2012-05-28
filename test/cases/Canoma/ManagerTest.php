@@ -32,13 +32,26 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
      *
      * @expectedException \RuntimeException
      */
-    public function testAddNodeFail()
+    public function testAddNodeDuplicateFail()
     {
         $this->manager->addNode('foo');
         $this->assertEquals(1, count($this->manager->getAllNodes()));
 
         // This should throw an exception
         $this->manager->addNode('foo');
+        $this->fail('Expecting exactly 1 node after adding 1');
+    }
+
+
+    /**
+     * Adding invalid node names should fail.
+     *
+     * @expectedException \RuntimeException
+     */
+    public function testAddNodeInvalidNameFail()
+    {
+        // This should throw an exception
+        $this->manager->addNode(2);
         $this->fail('Expecting exactly 1 node after adding 1');
     }
 
@@ -55,6 +68,18 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         $manager->addNode('foo');
         $this->assertEquals(42, count($manager->getPositionsOfNode('foo')), 'Expecting 42 positions');
+    }
+
+
+    /**
+     * Expecting the replica count to determine the amount of positions that are generated
+     * @expectedException \RuntimeException
+     */
+    public function testNodePositionsForInvalidNode()
+    {
+        // This should throw an exception
+        $this->manager->getPositionsOfNode('f-o-o b-a-r');
+        $this->fail('Expecting an exception to be thrown when positions of an unexisting node is requested.');
     }
 
 

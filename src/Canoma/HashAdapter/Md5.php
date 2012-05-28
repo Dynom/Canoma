@@ -36,10 +36,14 @@ class Md5 extends HashAdapterAbstract implements HashAdapterInterface
      */
     public function compare($left, $right)
     {
-        return bccomp(
-            sprintf("%f", hexdec($left)),
-            sprintf("%f", hexdec($right)),
-            0
-        );
+        if ($this->is32bitOS()) {
+            return bccomp(
+                sprintf("%f", hexdec($left)),
+                sprintf("%f", hexdec($right)),
+                0
+            );
+        } else {
+            return parent::compare($left, $right);
+        }
     }
 }

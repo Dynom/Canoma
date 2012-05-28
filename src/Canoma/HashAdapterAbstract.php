@@ -33,4 +33,15 @@ abstract class HashAdapterAbstract
             return 1;
         }
     }
+
+
+    /**
+     * A method to test if we're on a 32 bit OS and should perhaps implement workarounds
+     *
+     * @return bool
+     */
+    public function is32bitOS()
+    {
+        return (PHP_INT_MAX == '2147483647');
+    }
 }

@@ -109,16 +109,20 @@ If you want to write your own, simply implement ```\Canoma\HashAdapterInterface`
 patch or, even better, fork the project and send a push request!
 
 
-The differences between drivers
--------------------------------
+Picking the right driver
+------------------------
 Different algorithms have different benefits. Faster algorithms tend to work quite poor at distributing, with too few
-bytes as input because they use less bits to calculate. Meaning that it's very hard (if not impossible) to fan
+bytes as input, because they use less bits to calculate. This means that it's very hard (if not impossible) to fan
 hash-results out over the various nodes.
 
-Choosing a hashing algorithm is should be done wisely. When you're dealing with small (amount of characters) hash keys,
+Choosing a hashing algorithm should be done wisely. When you're dealing with small (amount of characters) hash keys,
 choose a more complex algorithm (such as md5). When you're dealing with very large keys, you might want to pick a faster
-algorithm, such as Salsa20 or Adler32. Either way, make sure you test first, using the added 'calculateReplicates.php'
-script, which can be found in the test directory.
+algorithm, such as Salsa20 or Adler32. Either way, make sure you test first, using the added ```calculateReplicates.php```
+script, which can be found in the ```./test/``` directory.
+
+The most important number to look at, is the standard deviation. The closer to 0% means that keys are spread evenly over
+the various nodes. However the algorithm might be slow and you might want to sacrifice an even distribution over
+performance.
 
 
 About
@@ -127,7 +131,8 @@ About
 
 What is consistent hashing?
 ---------------------------
-Consistent hashing is a concept developed around 1997. The basic idea is to evenly distribute cache on distributed cache servers. To read an excellent write-up on the subject, be sure to read the following:
+Consistent hashing is a concept developed around 1997. The basic idea is to evenly distribute cache on distributed cache
+servers. To read an excellent write-up on the subject, be sure to read the following:
 
 * http://weblogs.java.net/blog/tomwhite/archive/2007/11/consistent_hash.html
 * http://www8.org/w8-papers/2a-webserver/caching/paper2.html

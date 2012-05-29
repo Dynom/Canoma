@@ -29,6 +29,19 @@ Usage
 =====
 
 
+Requirements
+------------
+PHP 5.3, 5.4 or greater. Both are being tested using Continuous Integration. The test-suite is designed with PHPUnit
+(3.6.*), but it will probably run on other versions. Furthermore each hashing adapter will have specific algorithm
+requirements. All of them should be fairly self-explanatory, (the Md5 adapter uses md5, etc..). To test if they run on
+your environment, simply run the test-suite:
+
+```
+$ cd test/
+$ phpunit
+```
+
+
 Quick-start
 ------------
 Install by either downloading or cloning this repository, for stable releases clone or download from the master branch.
@@ -107,6 +120,12 @@ Canoma uses an adapter pattern for the different hashing algorithms, there are a
 
 If you want to write your own, simply implement ```\Canoma\HashAdapterInterface``` and you're done. Be sure to send me a
 patch or, even better, fork the project and send a push request!
+
+Note that certain choices have been made in the design process. One of them is to not include any checks in drivers, to
+ensure that a driver will actually function on your system. Doing so would introduce overhead on every request that is
+in essense only required once. You have to test if a certain algorithm is available. The test-suite has a large
+coverage and tests many cases. If certain tests are being skipped, it is probably because (e.g.) algorithms are
+unavailable.
 
 
 Picking the right driver

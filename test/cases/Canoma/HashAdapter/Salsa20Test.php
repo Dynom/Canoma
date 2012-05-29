@@ -16,6 +16,11 @@ class Salsa20Test extends \PHPUnit_Framework_TestCase
         // Use the factory and define the required config.
         $this->factory = new \Canoma\Factory();
         $this->adapterConfig[\Canoma\Factory::CONF_HASHING_ADAPTER] = 'Salsa20';
+
+        // Test if we have the required algorithm, if not, skip the tests.
+        if ( ! in_array('salsa20', hash_algos())) {
+            $this->markTestSkipped('Skipping, because salsa20 is not supported on this platform.');
+        }
     }
 
     /**

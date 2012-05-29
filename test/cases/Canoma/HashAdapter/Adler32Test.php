@@ -16,6 +16,11 @@ class Adler32Test extends \PHPUnit_Framework_TestCase
         // Use the factory and define the required config.
         $this->factory = new \Canoma\Factory();
         $this->adapterConfig[\Canoma\Factory::CONF_HASHING_ADAPTER] = 'Adler32';
+
+        // Test if we have the required algorithm, if not, skip the tests.
+        if ( ! in_array('adler32', hash_algos())) {
+            $this->markTestSkipped('Skipping, because adler32 is not supported on this platform.');
+        }
     }
 
     /**

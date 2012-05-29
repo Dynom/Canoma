@@ -16,6 +16,11 @@ class Md5Test extends \PHPUnit_Framework_TestCase
         // Use the factory and define the required config.
         $this->factory = new \Canoma\Factory();
         $this->adapterConfig[\Canoma\Factory::CONF_HASHING_ADAPTER] = 'Md5';
+
+        // Test if we have the required algorithm, if not, skip the tests.
+        if ( ! in_array('md5', hash_algos())) {
+            $this->markTestSkipped('Skipping, because md5 is not supported on this platform.');
+        }
     }
 
     /**

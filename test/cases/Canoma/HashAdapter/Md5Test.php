@@ -26,6 +26,7 @@ class Md5Test extends \PHPUnit_Framework_TestCase
         $adapter = $this->factory->createAdapter($this->adapterConfig);
 
         $this->assertTrue(ctype_alnum($adapter->hash($someString)));
+        $this->assertEquals(md5($someString), $adapter->hash($someString));
     }
 
     /**

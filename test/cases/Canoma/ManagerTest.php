@@ -143,6 +143,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         }
 
         // Do lookups for the amount of cache-keys
+        $result = array();
         for ($i = 0; $i < $keyCount; $i++) {
             $result[] = $manager->getNodeForString("user:". $i);
         }
@@ -202,5 +203,19 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->assertEquals(500*100, count($manager->getAllPositions()), 'Expecting 50.000 positions.');
+    }
+
+
+    /**
+     * Testing the 'getAdapter' functionality
+     */
+    public function testGetAdapter()
+    {
+        $manager = new \Canoma\Manager(
+            new \Canoma\HashAdapter\Crc32(),
+            500
+        );
+
+        $this->assertInstanceOf('\Canoma\HashAdapter\Crc32', $manager->getAdapter());
     }
 }

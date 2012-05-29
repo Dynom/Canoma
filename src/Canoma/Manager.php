@@ -151,6 +151,15 @@ class Manager
 
 
     /**
+     * @return HashAdapterInterface
+     */
+    public function getAdapter()
+    {
+        return $this->adapter;
+    }
+
+
+    /**
      * Return hashes based on the node and the amount of replicas to create.
      *
      * @param string $node

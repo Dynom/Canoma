@@ -26,6 +26,7 @@ class Crc32Test extends \PHPUnit_Framework_TestCase
         $adapter = $this->factory->createAdapter($this->adapterConfig);
 
         $this->assertTrue(ctype_alnum($adapter->hash($someString)));
+        $this->assertEquals(dechex(crc32($someString)), $adapter->hash($someString));
     }
 
     /**

@@ -11,7 +11,7 @@ use \Canoma\HashAdapterAbstract;
 class Crc32 extends HashAdapterAbstract implements HashAdapterInterface
 {
     /**
-     * Convert the argument (a string) to a hexadecimal value, using the crc32 algorithm.
+     * Convert the argument (a string) to a hexadecimal value, using the crc32-b algorithm.
      *
      * @param string $string
      *
@@ -20,7 +20,7 @@ class Crc32 extends HashAdapterAbstract implements HashAdapterInterface
     public function hash($string)
     {
         return hash(
-            'crc32',
+            'crc32b',
             $string
         );
     }

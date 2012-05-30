@@ -1,18 +1,21 @@
 <?php
+
+use \Canoma\Factory;
+
 /**
  * @author Mark van der Velden <mark@dynom.nl>
  */ 
 class FactoryTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testConstructionOfManager()
+    public function testMinimalConstructionOfManager()
     {
         $config = array(
-            \Canoma\Factory::CONF_REPLICA_COUNT => 200,
-            \Canoma\Factory::CONF_HASHING_ADAPTER => 'Md5'
+            Factory::CONF_REPLICA_COUNT => 200,
+            Factory::CONF_HASHING_ADAPTER => 'Md5'
         );
 
-        $factory = new \Canoma\Factory();
+        $factory = new Factory();
         $manager = $factory->createManager($config);
 
         $this->assertTrue($manager instanceof \Canoma\Manager);
@@ -22,22 +25,40 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider adapterNameProvider
      */
-    public function testConstructionOfAdapter($adapterName)
+    public function testMinimalConstructionOfAdapter($adapterName)
     {
         // This should be the name.
         $fqn = '\Canoma\HashAdapter\\'. $adapterName;
 
         // Specifying the adapter name in the configuration
         $config = array(
-            'hashing_adapter' => $adapterName
+            Factory::CONF_HASHING_ADAPTER => $adapterName
         );
 
         // Create the adapter, based on the configuration
-        $factory = new \Canoma\Factory();
+        $factory = new Factory();
         $adapter = $factory->createAdapter($config);
 
         $this->assertInstanceOf($fqn, $adapter, 'Expecting the adapter to be an instance of "'. $fqn .'"');
         $this->assertInstanceOf('\Canoma\HashAdapterInterface', $adapter, 'Expecting the adapter to implement the hash adapter interface');
+    }
+
+
+    public function testConstructionOfManagerWithNodes()
+    {
+        $config = array(
+            Factory::CONF_REPLICA_COUNT => 200,
+            Factory::CONF_HASHING_ADAPTER => 'Md5',
+            Factory::CONF_NODES => array(
+                'cache-1.example.com:11211',
+                'cache-2.example.com:11211',
+                'cache-3.example.com:11211',
+            )
+        );
+
+        $factory = new Factory();
+        $manager = $factory->createManager($config);
+        $this->assertCount(3, $manager->getAllNodes(), 'Expecting 3 nodes to be added.');
     }
 
 
@@ -62,7 +83,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateManagerInvalidConfiguration(array $config)
     {
-        $factory = new \Canoma\Factory();
+        $factory = new Factory();
 
         // This should thrown an exception
         $factory->createManager(
@@ -80,8 +101,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array(array()),
-            array(array(\Canoma\Factory::CONF_REPLICA_COUNT => 'foo')),
-            array(array(\Canoma\Factory::CONF_REPLICA_COUNT => -1)),
+            array(array(Factory::CONF_REPLICA_COUNT => 'foo')),
+            array(array(Factory::CONF_REPLICA_COUNT => -1)),
         );
     }
 
@@ -93,7 +114,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateAdapterInvalidConfiguration(array $config)
     {
-        $factory = new \Canoma\Factory();
+        $factory = new Factory();
 
         // This should thrown an exception
         $factory->createAdapter(
@@ -120,11 +141,11 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateAdapterInvalidConfigurationClass()
     {
-        $factory = new \Canoma\Factory();
+        $factory = new Factory();
 
         // This should thrown an exception
         $factory->createAdapter(
-            array(\Canoma\Factory::CONF_HASHING_ADAPTER => 'someUnexistingClassIsBeingPassedAlongHere')
+            array(Factory::CONF_HASHING_ADAPTER => 'someUnexistingClassIsBeingPassedAlongHere')
         );
 
         $this->fail('Expected exceptions on invalid adapter definition, the class does not exist.');

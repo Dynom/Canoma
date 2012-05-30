@@ -119,6 +119,9 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     }
 
 
+    /**
+     *
+     */
     public function testGetMultipleNodesForString()
     {
         $manager = new \Canoma\Manager(
@@ -140,9 +143,54 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
 
     /**
+     * @dataProvider multipleNodesForStringProvider
+     *
+     * @param int $nodeCount
+     * @param int $nodeAmount
+     * @param array $matchingNodes
+     *
+     * @return void
+     */
+    public function testGetMultipleNodesForStringDynamic($nodeCount, $nodeAmount, array $matchingNodes)
+    {
+        $manager = new \Canoma\Manager(
+            new \Canoma\HashAdapter\Md5(),
+            5
+        );
+
+        for ($i = 0; $i < $nodeCount; $i++) {
+            $manager->addNode('A '. $i);
+        }
+
+        $nodes = $manager->getMultipleNodesForString('user:42', $nodeAmount);
+        $this->assertEquals($matchingNodes, $nodes);
+    }
+
+
+    /**
+     * Return a set of arguments for testGetMultipleNodesForStringDynamic, arguments order:
+     * - Amount of nodes to create (nodeCount)
+     * - Amount of nodes to return (nodeAmount)
+     * - Array with nodes
+     *
+     * @return array
+     */
+    public function multipleNodesForStringProvider()
+    {
+        return array(
+            array(200, 2, array('A 182' => 'A 182', 'A 32' => 'A 32')),
+            array(50, 2, array('A 32' => 'A 32', 'A 15' => 'A 15')),
+            array(10, 2, array('A 0' => 'A 0', 'A 8' => 'A 8')),
+            array(5, 5, array('A 0' => 'A 0', 'A 1' => 'A 1', 'A 2' => 'A 2', 'A 3' => 'A 3', 'A 4' => 'A 4')),
+            array(5, 3, array('A 0' => 'A 0', 'A 3' => 'A 3', 'A 1' => 'A 1')),
+        );
+    }
+
+
+    /**
      * @expectedException \RuntimeException
      */
-    public function testGetMultipleNodesForStringTooFewAmount()
+    public function testGetMultipleNodesForStringTooLargeAmount()
     {
         $this->manager
                 ->addNode('A')
@@ -150,6 +198,30 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         $this->manager->getMultipleNodesForString('foo', 6);
         $this->fail('Expecting an exception being thrown, since we request more nodes then have been defined.');
+    }
+
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testGetMultipleNodesWithAInsaneAmount()
+    {
+        $this->manager->addNode('B');
+
+        $this->manager->getMultipleNodesForString('foo', 0);
+        $this->fail('Expecting an exception being thrown, since we requested a <1 amount of nodes.');
+    }
+
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testGetMultipleNodesWithInvalidAmount()
+    {
+        $this->manager->addNode('B');
+
+        $this->manager->getMultipleNodesForString('foo', true);
+        $this->fail('Expecting an exception being thrown, since $amount is of an invalid type.');
     }
 
 

@@ -78,6 +78,45 @@ class Manager
 
 
     /**
+     * @param $string
+     * @param int $amount
+     *
+     * @return array
+     * @throws \RuntimeException
+     */
+    public function getMultipleNodesForString($string, $amount = 2)
+    {
+        $stringPosition = $this->adapter->hash($string);
+        $amount = is_numeric($amount) ? (int) $amount : -1;
+
+        if ( ! $this->testValidAmount($amount)) {
+            throw new \RuntimeException(
+                'Invalid amount has been given, fewer nodes have been added or the value is too low (>0).'
+            );
+        }
+
+        // Don't bother looping if the amount is identical. This is, however, a silly situation...
+        if (count($this->nodes) === $amount) {
+            return $this->nodes;
+        }
+
+        // Get all the nodes from our starting position
+        $nodes = $this->findMultipleNodesAfterPosition($stringPosition, $amount);
+
+        // If we have too few, fetch the remaining from the start.
+        if (count($nodes) < $amount) {
+            $remaining = $amount - count($nodes);
+            $nodes = array_merge(
+                $nodes,
+                $this->findMultipleNodesFromStart($remaining)
+            );
+        }
+
+        return $nodes;
+    }
+
+
+    /**
      * Add a cache-node. The method expects a string argument, representing a node.
      *
      * @param string $node
@@ -200,5 +239,81 @@ class Manager
         }
 
         return $positions;
+    }
+
+
+    /**
+     * @param $amount
+     *
+     * @return bool
+     */
+    private function testValidAmount($amount)
+    {
+        // Sanity checks
+        if ($amount < 1) {
+            return false;
+        }
+
+        if (count($this->nodes) < $amount) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    /**
+     * Find $amount of nodes, starting from position $offsetPosition.
+     *
+     * @param int|float $offsetPosition
+     * @param int $amount
+     *
+     * @return array
+     */
+    private function findMultipleNodesAfterPosition($offsetPosition, $amount)
+    {
+        $nodes = array();
+
+        // Find the nodes, that are positioned after the position of $string.
+        foreach ($this->nodePositions as $nodePosition => $node) {
+
+            // If the position of the node, is greater than the position of the string, we can return the first hit.
+            if ($this->adapter->compare($nodePosition, $offsetPosition) > 0) {
+                $nodes[$node] = $node;
+
+                if (count($nodes) === $amount) {
+                    return $nodes;
+                }
+            }
+        }
+
+        return $nodes;
+    }
+
+
+    /**
+     * Find $amount of nodes, starting from position 0
+     *
+     * @param int $amount
+     *
+     * @return array
+     */
+    private function findMultipleNodesFromStart($amount)
+    {
+        $amount = (int) $amount;
+        $nodes = array();
+
+
+        // Find the node, that is positioned after the position at the start
+        foreach ($this->nodePositions as $node) {
+
+            $nodes[$node] = $node;
+
+            if (count($nodes) === $amount) {
+                return $nodes;
+            }
+        }
+
+        return $nodes;
     }
 }

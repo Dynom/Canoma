@@ -45,4 +45,16 @@ class Md5Test extends \PHPUnit_Framework_TestCase
             array('A simple string, that should definitely not pass a ctype_alnum test!'),
         );
     }
+
+
+    public function test32BitOS()
+    {
+        $adapter = Phake::mock('\Canoma\HashAdapter\Md5');
+
+        Phake::when($adapter)->compare(Phake::anyParameters())->thenCallParent();
+        Phake::when($adapter)->hash(Phake::anyParameters())->thenCallParent();
+        Phake::when($adapter)->is32bitOS()->thenReturn(true);
+
+        $this->assertEquals(-1, $adapter->compare(1, 2));
+    }
 }

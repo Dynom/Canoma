@@ -188,6 +188,42 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
 
     /**
+     * Testing the wrapping of fetching nodes
+     */
+    public function testMultipleNodesForStringAddRemaining()
+    {
+        $adapter = Phake::mock('\Canoma\HashAdapter\Md5');
+        Phake::when($adapter)->compare(Phake::anyParameters())->thenCallParent();
+
+        $manager = new \Canoma\Manager(
+            $adapter,
+            1
+        );
+
+        Phake::when($adapter)->hash(Phake::anyParameters())->thenReturn(10);
+        $manager->addNode('a');
+
+        Phake::when($adapter)->hash(Phake::anyParameters())->thenReturn(20);
+        $manager->addNode('b');
+
+        Phake::when($adapter)->hash(Phake::anyParameters())->thenReturn(30);
+        $manager->addNode('c');
+
+        Phake::when($adapter)->hash(Phake::anyParameters())->thenReturn(40);
+        $manager->addNode('d');
+
+        Phake::when($adapter)->hash(Phake::anyParameters())->thenReturn(35);
+        $this->assertEquals('d', $manager->getNodeForString('this should get position 35, and thus node D'));
+
+        $this->assertEquals(
+            array('d', 'a'),
+            array_values($manager->getMultipleNodesForString('a')),
+            'This should get nodes D and A, since the position is 35.'
+        );
+    }
+
+
+    /**
      * @expectedException \RuntimeException
      */
     public function testGetMultipleNodesForStringTooLargeAmount()

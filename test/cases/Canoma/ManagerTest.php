@@ -106,19 +106,50 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testGetNodeForString()
     {
+        $this->manager
+                ->addNode('A')
+                ->addNode('B')
+                ->addNode('C')
+                ->addNode('D');
+
+        $cacheIdentifier = 'user:42';
+
+        $node = $this->manager->getNodeForString($cacheIdentifier);
+        $this->assertInternalType('string', $node, 'Expecting the node to be a string');
+    }
+
+
+    public function testGetMultipleNodesForString()
+    {
         $manager = new \Canoma\Manager(
             new \Canoma\HashAdapter\Md5(),
-            150
+            5
         );
         $manager->addNode('A');
         $manager->addNode('B');
         $manager->addNode('C');
         $manager->addNode('D');
 
-        $cacheIdentifier = 'user:42';
+        $nodes = $manager->getMultipleNodesForString('user:42', 2);
+        $this->assertEquals(
+            array('A', 'C'),
+            array_values($nodes),
+            'Expecting the nodes to be ..'
+        );
+    }
 
-        $node = $manager->getNodeForString($cacheIdentifier);
-        $this->assertInternalType('string', $node, 'Expecting the node to be a string');
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testGetMultipleNodesForStringTooFewAmount()
+    {
+        $this->manager
+                ->addNode('A')
+                ->addNode('B');
+
+        $this->manager->getMultipleNodesForString('foo', 6);
+        $this->fail('Expecting an exception being thrown, since we request more nodes then have been defined.');
     }
 
 
@@ -178,7 +209,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $mean = array_sum($resultSummary) / count($resultSummary);
 
         $deviationResult = array();
-        foreach ($resultSummary as $node => $nodeCount) {
+        foreach ($resultSummary as $nodeCount) {
             $deviationResult[] = pow($nodeCount - $mean, 2);
         }
 
@@ -211,35 +242,26 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetAdapter()
     {
-        $manager = new \Canoma\Manager(
-            new \Canoma\HashAdapter\Crc32(),
-            500
-        );
-
-        $this->assertInstanceOf('\Canoma\HashAdapter\Crc32', $manager->getAdapter());
+        $this->assertInstanceOf('\Canoma\HashAdapterInterface', $this->manager->getAdapter());
     }
 
 
     public function testAddNodes()
     {
-        $manager = new \Canoma\Manager(
-            new \Canoma\HashAdapter\Crc32(),
-            50
-        );
-
-        $manager->addNodes(
+        $this->manager->addNodes(
             array(
                  'a',
                  'b'
             )
         );
 
-        $this->assertCount(2, $manager->getAllNodes(), 'Expecting two nodes, after adding two.');
+        $this->assertCount(2, $this->manager->getAllNodes(), 'Expecting two nodes, after adding two.');
 
-        $manager->addNodes(array('c'))
+        $this->manager
+                ->addNodes(array('c'))
                 ->addNodes(array('d'));
 
-        $this->assertCount(4, $manager->getAllNodes(), 'Expecting four nodes, after adding two more.');
+        $this->assertCount(4, $this->manager->getAllNodes(), 'Expecting four nodes, after adding two more.');
     }
 
 
@@ -248,21 +270,16 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddNodesDuplicate()
     {
-        $manager = new \Canoma\Manager(
-            new \Canoma\HashAdapter\Crc32(),
-            50
-        );
-
-        $manager->addNodes(
+        $this->manager->addNodes(
             array(
                  'a',
                  'b'
             )
         );
 
-        $this->assertCount(2, $manager->getAllNodes(), 'Expecting two nodes, after adding two.');
+        $this->assertCount(2, $this->manager->getAllNodes(), 'Expecting two nodes, after adding two.');
 
-        $manager->addNodes(array('a'));
+        $this->manager->addNodes(array('a'));
 
         $this->fail('Expecting an exception being thrown after adding a duplicate node.');
     }

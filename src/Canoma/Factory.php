@@ -16,6 +16,7 @@ class Factory
      * Create a manager and the adapter
      *
      * @param array $configuration
+     * @return \Canoma\Manager
      * @throws \InvalidArgumentException
      */
     public function createManager(array $configuration)
@@ -82,7 +83,8 @@ class Factory
             return false;
         }
 
-        if ( ! is_numeric($configuration[static::CONF_REPLICA_COUNT]) || $configuration[static::CONF_REPLICA_COUNT] < 0) {
+        if ( ! is_numeric($configuration[static::CONF_REPLICA_COUNT])
+                || $configuration[static::CONF_REPLICA_COUNT] < 0) {
             return false;
         }
 

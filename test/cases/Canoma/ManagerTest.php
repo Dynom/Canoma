@@ -218,4 +218,22 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('\Canoma\HashAdapter\Crc32', $manager->getAdapter());
     }
+
+
+    public function testAddNodes()
+    {
+        $manager = new \Canoma\Manager(
+            new \Canoma\HashAdapter\Crc32(),
+            50
+        );
+
+        $manager->addNodes(
+            array(
+                 'a',
+                 'b'
+            )
+        );
+
+        $this->assertCount(2, $manager->getAllNodes(), 'Expecting two nodes, after adding two.');
+    }
 }

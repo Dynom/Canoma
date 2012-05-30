@@ -112,6 +112,22 @@ class Manager
 
 
     /**
+     * Add multiple nodes at once.
+     *
+     * @param array $nodes
+     * @return Manager
+     */
+    public function addNodes(array $nodes)
+    {
+        foreach ($nodes as $node) {
+            $this->addNode($node);
+        }
+
+        return $this;
+    }
+
+
+    /**
      * Return the complete list with nodes
      *
      * @return array

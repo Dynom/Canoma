@@ -9,6 +9,7 @@ class Factory
 {
     const CONF_REPLICA_COUNT = 'replica_count';
     const CONF_HASHING_ADAPTER = 'hashing_adapter';
+    const CONF_NODES = 'nodes';
 
 
     /**
@@ -25,10 +26,17 @@ class Factory
             );
         }
 
-        return new Manager(
+        $manager = new Manager(
             $this->createAdapter($configuration),
             $configuration[static::CONF_REPLICA_COUNT]
         );
+
+        // If we have >0 nodes, add them to our manager
+        if (!empty($configuration[static::CONF_NODES])) {
+            $manager->addNodes($configuration[static::CONF_NODES]);
+        }
+
+        return $manager;
     }
 
 

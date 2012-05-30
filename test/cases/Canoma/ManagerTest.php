@@ -235,5 +235,35 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertCount(2, $manager->getAllNodes(), 'Expecting two nodes, after adding two.');
+
+        $manager->addNodes(array('c'))
+                ->addNodes(array('d'));
+
+        $this->assertCount(4, $manager->getAllNodes(), 'Expecting four nodes, after adding two more.');
+    }
+
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testAddNodesDuplicate()
+    {
+        $manager = new \Canoma\Manager(
+            new \Canoma\HashAdapter\Crc32(),
+            50
+        );
+
+        $manager->addNodes(
+            array(
+                 'a',
+                 'b'
+            )
+        );
+
+        $this->assertCount(2, $manager->getAllNodes(), 'Expecting two nodes, after adding two.');
+
+        $manager->addNodes(array('a'));
+
+        $this->fail('Expecting an exception being thrown after adding a duplicate node.');
     }
 }

@@ -52,6 +52,12 @@ class Manager
     }
 
 
+    /**
+     * Return a matching node, based on a string
+     *
+     * @param string $string
+     * @return mixed
+     */
     public function getNodeForString($string)
     {
         $stringPosition = $this->adapter->hash($string);

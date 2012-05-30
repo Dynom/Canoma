@@ -2,7 +2,7 @@
     "name":"dynom/cache-node-manager",
     "description":"A CAche NOde MAnager, capable of consistent hashing, that doesn't dictate what back-ends you must use.",
     "keywords":["Consistent Hashing", "cache", "Canoma"],
-    "license":"MIT",
+    "license":"WTFPL",
     "authors":[
         {
             "name":"Mark van der Velden",

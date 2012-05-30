@@ -141,10 +141,7 @@ class Manager
         $this->positionsPerNode[ $node ] = $nodePositions;
 
         // Adding the positions to the 'ring'
-        $this->nodePositions = array_merge(
-            $this->nodePositions,
-            $nodePositions
-        );
+        $this->nodePositions = $this->nodePositions + $nodePositions;
 
         // Sort the keys
         ksort($this->nodePositions);

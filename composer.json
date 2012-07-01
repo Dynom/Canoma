@@ -1,12 +1,13 @@
 {
-    "name":"dynom/cache-node-manager",
+    "name":"canoma/canoma",
     "description":"A CAche NOde MAnager, capable of consistent hashing, that doesn't dictate what back-ends you must use.",
     "keywords":["Consistent Hashing", "cache", "Canoma"],
     "license":"WTFPL",
     "authors":[
         {
             "name":"Mark van der Velden",
-            "email":"mark@dynom.nl"
+            "email":"mark@dynom.nl",
+            "homepage":"http://blog.dynom.nl"
         }
     ],
     "require":{

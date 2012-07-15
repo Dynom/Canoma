@@ -6,11 +6,9 @@ Canoma - Caching Node Manager
 
 What is Canoma?
 ---------------
-Canoma (CAche NOde MAnager) is a consistent hashing implementation. The ideas behind it:
-
-* Provide a intuitive API
-* Provide a flexible library
-* Unit-tested (This project is being developed using TDD)
+Canoma (CAche NOde MAnager) is a consistent hashing implementation. It aims to be an intuitive and well tested library.
+That allows you to easily implement consistent hashing in your caching implementation. It's completely back-end
+agnostic, easy to extend and free to use. It's developed using TDD.
 
 
 What problems does Canoma solve?

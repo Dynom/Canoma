@@ -391,4 +391,20 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         $this->fail('Expecting an exception being thrown after adding a duplicate node.');
     }
+
+
+    /**
+     * Testing that we check for the existence of a node
+     */
+    public function testHasNode()
+    {
+        $this->manager->addNodes(
+            array(
+                 'a',
+            )
+        );
+
+        $this->assertFalse($this->manager->hasNode('A'), 'Expecting node "A" to not be defined.');
+        $this->assertTrue($this->manager->hasNode('a'), 'Expecting node "a" is defined.');
+    }
 }

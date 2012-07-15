@@ -117,6 +117,18 @@ class Manager
 
 
     /**
+     * Returns true if a node has been defined, false otherwise.
+     *
+     * @param string $node
+     * @return bool
+     */
+    public function hasNode($node)
+    {
+        return isset($this->nodes[ $node ]) && isset($this->positionsPerNode[ $node ]);
+    }
+
+
+    /**
      * Add a cache-node. The method expects a string argument, representing a node.
      *
      * @param string $node

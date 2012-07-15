@@ -6,11 +6,9 @@ Canoma - Caching Node Manager
 
 What is Canoma?
 ---------------
-Canoma (CAche NOde MAnager) is a consistent hashing implementation. The ideas behind it:
-
-* Provide a intuitive API
-* Provide a flexible library
-* Unit-tested (This project is being developed using TDD)
+Canoma (CAche NOde MAnager) is a consistent hashing implementation. It aims to be an intuitive and well tested library.
+That allows you to easily implement consistent hashing in your caching implementation. It's completely back-end
+agnostic, easy to extend and free to use. It's developed using TDD.
 
 
 What problems does Canoma solve?
@@ -44,7 +42,11 @@ $ phpunit
 
 Quick-start
 ------------
-Install by either downloading or cloning this repository, for stable releases clone or download from the master branch.
+The easy way is to add "canoma/canoma" to your composer.json, see: http://packagist.org/packages/canoma/canoma
+The alternatives are:
+
+* Clone this repo or,
+* Download the source: https://github.com/Dynom/Canoma/tags
 
 
 Example usage
@@ -108,6 +110,29 @@ $node = $manager->getNodeForString('user:42:session');
 
 ?>
 ```
+
+Some logic around dirty cache-nodes.
+```php
+<?php
+
+// Create a manager object via our factory. Setting the adapter, the replicate count and the nodes
+$factory = new \Canoma\Factory;
+$manager = $factory->createManager($yourConfiguration);
+
+// Test and remove slow or offline cache nodes. This is not something Canoma can do
+// but something your back-end software (should) support(s)
+$dirtyNodes = $someBackend->testForDirtyNodes($manager->getAllNodes());
+foreach ($dirtyNodes as $node) {
+    $manager->removeNode($node);
+}
+
+// Do a lookup for your cache-identifier and see what node we can use.
+$node = $manager->getNodeForString('user:42:session');
+
+// ..
+
+```
+
 
 
 Drivers

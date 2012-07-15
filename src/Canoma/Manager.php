@@ -117,6 +117,18 @@ class Manager
 
 
     /**
+     * Returns true if a node has been defined, false otherwise.
+     *
+     * @param string $node
+     * @return bool
+     */
+    public function hasNode($node)
+    {
+        return isset($this->nodes[ $node ]) && isset($this->positionsPerNode[ $node ]);
+    }
+
+
+    /**
      * Add a cache-node. The method expects a string argument, representing a node.
      *
      * @param string $node
@@ -164,6 +176,38 @@ class Manager
         foreach ($nodes as $node) {
             $this->addNode($node);
         }
+
+        return $this;
+    }
+
+
+    /**
+     * Remove a node from the list.
+     *
+     * @param string $node
+     * @return Manager
+     * @throws \RuntimeException
+     */
+    public function removeNode($node)
+    {
+        if ( ! $this->hasNode($node)) {
+            throw new \RuntimeException('Node "'. $node .'" has not been defined.');
+        }
+
+        // Get the node positions
+        $nodePositions = $this->positionsPerNode[ $node ];
+
+        // Remove the node positions from the ring
+        foreach ($nodePositions as $position => $node) {
+            unset($this->nodePositions[ $position ]);
+        }
+
+        // Unset the node positions from the lookup index
+        unset($this->positionsPerNode[ $node ]);
+
+        // Unset the node reference
+        unset($this->nodes[ $node ]);
+
 
         return $this;
     }

@@ -391,4 +391,57 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         $this->fail('Expecting an exception being thrown after adding a duplicate node.');
     }
+
+
+    /**
+     * Testing that we check for the existence of a node
+     */
+    public function testHasNode()
+    {
+        $this->manager->addNodes(
+            array(
+                 'a',
+            )
+        );
+
+        $this->assertFalse($this->manager->hasNode('A'), 'Expecting node "A" to not be defined.');
+        $this->assertTrue($this->manager->hasNode('a'), 'Expecting node "a" is defined.');
+    }
+
+
+    /**
+     * Testing the removal of a node
+     */
+    public function testRemoveNode()
+    {
+        $manager = new \Canoma\Manager(new \Canoma\HashAdapter\Md5(), 42);
+        $manager->addNodes(
+            array(
+                 'a',
+                 'b',
+                 'c',
+                 'd'
+            )
+        );
+
+        // Confirming conditions before removing the node
+        $this->assertCount(4, $manager->getAllNodes(), 'Expecting four nodes, after adding four.');
+        $this->assertCount(168, $manager->getAllPositions(), 'Expecting 168 positions, 42 * 4 nodes.');
+
+        $manager->removeNode('a');
+
+        // Confirming that after removing the node, we left in a sane state.
+        $this->assertCount(3, $manager->getAllNodes(), 'Expecting three nodes, after removing one.');
+        $this->assertCount(126, $manager->getAllPositions(), 'Expecting 126 positions, 42 * 3 nodes.');
+
+        // Confirming that removing keys doesn't influence the order
+        $sortedPositions = $manager->getAllPositions();
+        ksort($sortedPositions, SORT_REGULAR);
+
+        $this->assertSame(
+            $sortedPositions,
+            $manager->getAllPositions(),
+            'Expecting that sorting has no influence on the positions'
+        );
+    }
 }

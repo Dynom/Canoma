@@ -72,6 +72,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         return array(
             array('Md5'),
             array('Crc32'),
+            array('Adler32'),
+            array('Salsa20'),
         );
     }
 

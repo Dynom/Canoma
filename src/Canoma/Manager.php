@@ -182,6 +182,38 @@ class Manager
 
 
     /**
+     * Remove a node from the list.
+     *
+     * @param string $node
+     * @return Manager
+     * @throws \RuntimeException
+     */
+    public function removeNode($node)
+    {
+        if ( ! $this->hasNode($node)) {
+            throw new \RuntimeException('Node "'. $node .'" has not been defined.');
+        }
+
+        // Get the node positions
+        $nodePositions = $this->positionsPerNode[ $node ];
+
+        // Remove the node positions from the ring
+        foreach ($nodePositions as $position => $node) {
+            unset($this->nodePositions[ $position ]);
+        }
+
+        // Unset the node positions from the lookup index
+        unset($this->positionsPerNode[ $node ]);
+
+        // Unset the node reference
+        unset($this->nodes[ $node ]);
+
+
+        return $this;
+    }
+
+
+    /**
      * Return the complete list with nodes
      *
      * @return array

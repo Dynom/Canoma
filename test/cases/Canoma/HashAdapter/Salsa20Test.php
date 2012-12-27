@@ -26,23 +26,30 @@ class Salsa20Test extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider simpleStringProvider
      */
-    public function testSimpleHashing($someString)
+    public function testSimpleHashing($someString, $expectedHash)
     {
         $adapter = $this->factory->createAdapter($this->adapterConfig);
 
         $this->assertTrue(ctype_alnum($adapter->hash($someString)));
-        $this->assertEquals(hash('salsa20', $someString), $adapter->hash($someString));
+        $this->assertEquals($expectedHash, $adapter->hash($someString));
     }
+
 
     /**
      * Provider of strings.
+     *
+     * Syntax:
+     *  array(<challenge>, <hashed representation>)
      *
      * @return array
      */
     public function simpleStringProvider()
     {
         return array(
-            array('A simple string, that should definitely not pass a ctype_alnum test!'),
+            array(
+                'A simple string, that should definitely not pass a ctype_alnum test!',
+                '7d7e6a85cf3e4840aff175a38d4705318a9c0ac74848d2499155793fb4c3de952c324a79f41e805065b714494de2b2255d2a482a2c6ad9a75f06e47cddf92b44'
+            ),
         );
     }
 }

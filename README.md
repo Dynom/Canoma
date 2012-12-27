@@ -1,12 +1,12 @@
-Canoma - Caching Node Manager
-=============================
+Canoma - Consistent hashing for PHP
+===================================
 
 [![Build Status](https://secure.travis-ci.org/Dynom/Canoma.png?branch=development)](http://travis-ci.org/Dynom/Canoma)
 
 
 What is Canoma?
 ---------------
-Canoma (CAche NOde MAnager) is a consistent hashing implementation. It aims to be an intuitive and well tested library.
+Canoma (CAche NOde MAnager) is a consistent hashing implementation for PHP. It aims to be an intuitive and well tested library.
 That allows you to easily implement consistent hashing in your caching implementation. It's completely back-end
 agnostic, easy to extend and free to use. It's developed using TDD.
 

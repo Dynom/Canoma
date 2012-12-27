@@ -26,27 +26,37 @@ class Md5Test extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider simpleStringProvider
      */
-    public function testSimpleHashing($someString)
+    public function testSimpleHashing($someString, $expectedHash)
     {
         $adapter = $this->factory->createAdapter($this->adapterConfig);
 
         $this->assertTrue(ctype_alnum($adapter->hash($someString)));
-        $this->assertEquals(md5($someString), $adapter->hash($someString));
+        $this->assertEquals($expectedHash, $adapter->hash($someString));
     }
+
 
     /**
      * Provider of strings.
+     *
+     * Syntax:
+     *  array(<challenge>, <hashed representation>)
      *
      * @return array
      */
     public function simpleStringProvider()
     {
         return array(
-            array('A simple string, that should definitely not pass a ctype_alnum test!'),
+            array(
+                'A simple string, that should definitely not pass a ctype_alnum test!',
+                '054d87c680f6629003e1c43469a537a7'
+            ),
         );
     }
 
 
+    /**
+     * Emulate the scenario where we are on a 32 bit OS.
+     */
     public function test32BitOS()
     {
         $adapter = Phake::mock('\Canoma\HashAdapter\Md5');

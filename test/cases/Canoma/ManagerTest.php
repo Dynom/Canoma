@@ -1,6 +1,6 @@
 <?php
 /**
- * @author Mark van der Velden <mvdvelden@ibuildings.nl>
+ * @author Mark van der Velden <mark@dynom.nl>
  */
 class ManagerTest extends \PHPUnit_Framework_TestCase
 {

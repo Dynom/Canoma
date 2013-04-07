@@ -3,7 +3,7 @@
 namespace Canoma;
 
 /**
- * @author Mark van der Velden <mvdvelden@ibuildings.nl>
+ * @author Mark van der Velden <mark@dynom.nl>
  */
 class Manager
 {
